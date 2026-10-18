@@ -3,7 +3,7 @@ name = "steamcards-desktop"
 version = "1.0.0"
 edition = "2021"
 description = "Steam 卡牌估值 · 独立桌面应用（Tauri）"
-license = "MIT"
+license = "GPL-3.0-only"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

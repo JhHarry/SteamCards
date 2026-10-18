@@ -82,4 +82,6 @@ cargo build --release
 
 ## 许可证
 
-本项目采用 [MIT License](LICENSE) 开源。
+本项目采用 **GNU General Public License v3.0（GPLv3）** 开源，SPDX 标识为 `GPL-3.0-only`，完整条款见 [LICENSE](LICENSE)。
+
+GPLv3 允许在遵守许可证条款的前提下使用、研究、修改与分发本软件；任何分发的修改版本必须以相同许可证开放源代码。该许可证用于保持软件及其衍生作品的开源性质，防止修改版本被闭源专有化。需要说明的是，GPLv3 并不禁止收取费用或商业使用，但要求任何对外分发的修改版本继续以 GPLv3 开放源代码。

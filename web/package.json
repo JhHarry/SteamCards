@@ -1,6 +1,7 @@
 {
   "name": "steamcards-web",
   "private": true,
+  "license": "GPL-3.0-only",
   "version": "1.0.0",
   "type": "module",
   "description": "Steam 卡牌估值 — Pebble 风格 Web 前端",

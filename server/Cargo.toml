@@ -3,7 +3,7 @@ name = "steamcards-server"
 version = "1.0.0"
 edition = "2021"
 description = "Lightweight Steam trading-card valuation server with a Pebble-inspired web UI"
-license = "MIT"
+license = "GPL-3.0-only"
 
 [lib]
 name = "steamcards_core"
