@@ -1,5 +1,7 @@
 # SteamCards
 
+[English](README.en.md) | 简体中文
+
 SteamCards 是一款面向 Windows 平台的 Steam 库存卡牌估值桌面应用。项目使用 Rust 实现库存读取、价格查询、缓存管理与 CSV 导出等核心逻辑，使用 Tauri 2 构建桌面容器，并采用 React 19、TypeScript 与 Tailwind CSS 实现用户界面。
 
 ## 功能概述
