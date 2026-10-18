@@ -1,0 +1,33 @@
+# Build outputs
+target/
+web/node_modules/
+web/dist/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/
+desktop/src-tauri/wix/
+server/target/
+*.exe
+*.msi
+*.dll
+*.log
+build_done.txt
+
+# Local / private data
+*.csv
+.steamcards_cache.json
+.steamcards_inventory.json
+.steamcards_cookies
+.steamcards_history/
+installer/
+docs/
+tests/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python legacy
+__pycache__/
+*.pyc

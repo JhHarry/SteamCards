@@ -1,0 +1,28 @@
+[package]
+name = "steamcards-server"
+version = "1.0.0"
+edition = "2021"
+description = "Lightweight Steam trading-card valuation server with a Pebble-inspired web UI"
+license = "MIT"
+
+[lib]
+name = "steamcards_core"
+path = "src/lib.rs"
+
+[[bin]]
+name = "steamcards-server"
+path = "src/main.rs"
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "process", "time", "sync", "net", "signal", "fs", "io-util"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio-stream = { version = "0.1", features = ["sync"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

@@ -1,0 +1,23 @@
+[package]
+name = "steamcards-desktop"
+version = "1.0.0"
+edition = "2021"
+description = "Steam 卡牌估值 · 独立桌面应用（Tauri）"
+license = "MIT"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+steamcards-server = { path = "../../server" }
+rfd = "0.15"
+tokio = { version = "1", features = ["sync", "rt"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
