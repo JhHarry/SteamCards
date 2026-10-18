@@ -1,3 +1,5 @@
+[简体中文](README.md) | **English**
+
 # SteamCards
 
 SteamCards is a desktop application for valuing the trading cards in a Steam inventory, built for Windows. The core logic — inventory reading, price lookup, cache management and CSV export — is implemented in Rust, the desktop shell is built with Tauri 2, and the interface uses React 19, TypeScript and Tailwind CSS.
