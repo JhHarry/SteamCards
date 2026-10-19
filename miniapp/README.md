@@ -25,6 +25,8 @@ SteamCards 的小黑盒小程序（小程序工坊）移植版本。使用标准
 
 本项目没有自有后端，所有请求由小程序 Host 网络直接发往 Steam；如果平台审核不通过或网络策略不允许，需改为“小程序 + 后端 API”架构。
 
+> 本地 `hb-sdk dev` 的 Browser Mock 受浏览器 CORS 限制，访问 Steam 可能返回 `REQUEST_FAILED`，不能作为真实网络能力的验收依据；Steam 直连必须在真实手机/PC Host 上验证。
+
 ## 开发
 
 环境要求：Node.js >= 22.20.0。

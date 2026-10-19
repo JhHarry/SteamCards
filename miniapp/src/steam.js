@@ -521,6 +521,7 @@ export function describeError(error) {
   if (code === 'RATE_LIMIT' || (error && error.status === 429)) return 'Steam 接口正在限流，请稍后再试，或使用加速器/精确模式少量查询。';
   if (code === 'INVENTORY_PRIVATE' || code === 'INVENTORY_FAILED') return error.message;
   if (code === 'RESOLVE_FAILED' || code === 'INVALID_INPUT') return error.message;
+  if (code === 'REQUEST_FAILED') return '网络请求失败。本地 Browser Mock 受浏览器 CORS 限制，Steam 直连需在真实小黑盒客户端测试；同时请确认 network 权限已获批。';
   if (code === 'NETWORK_ERROR') return '网络请求失败。请确认手机网络、加速器以及 network 权限是否生效。';
   return (error && error.message) || '估值失败，请稍后重试。';
 }
