@@ -80,9 +80,12 @@ GPL-3.0-only，与 SteamCards 主项目一致。
 ## 当前发布状态
 
 - 远端小程序已创建并绑定：`01a152a8-212d-7e63-aaaa-5cc084f6134d`
-- 版本 `0.1.0` 已提交审核，状态：`auditing`
-- `network` 权限申请已提交，状态：`auditing`
-- 审核通过后使用 `npm run hb-sdk -- remote release 0.1.0` 手动发布
+- 版本 `0.1.0` 已审核通过并发布，状态：`released` / `published`
+- `network` 权限申请仍在审核中，状态：`auditing`
+- 线上页面：https://activity.xiaoheihe.cn/u/1xkv3nr/QNsw11SYe_/index.html
+- 分享页：https://web.xiaoheihe.cn/tools/common_share?user_miniprogram_id=01a152a8-212d-7e63-aaaa-5cc084f6134d
+- 在 `network` 获批前，线上版本只能查看「演示数据」；真实 Steam 请求会返回权限错误
+- `network` 获批后无需重新发版，权限会按当前版本 Manifest 生效；如果平台要求重新提审，则重新执行 `remote deploy`
 - 首次提交的远程展示名可能仍是平台默认的「我的小程序」，需要在开放平台管理页确认/修改名称与封面
 - 审核测试可使用页面上的「查看演示数据」按钮，无需真实 Steam 网络
 
