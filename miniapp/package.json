@@ -5,7 +5,7 @@
   "type": "module",
   "description": "SteamCards 小黑盒小程序：Steam 库存卡牌估值",
   "heybox": {
-    "miniProgramId": "",
+    "miniProgramId": "01a152a8-212d-7e63-aaaa-5cc084f6134d",
     "name": "Steam 卡牌估值",
     "desc": "读取 Steam 公开库存中的集换式卡牌，按社区市场参考价估算价值。",
     "category": "tool",
