@@ -9,6 +9,7 @@ import {
   saveHistory,
   clearHistory,
   clearPriceCache,
+  summarize,
   describeError,
   CancelledError
 } from './steam.js';
@@ -84,6 +85,7 @@ function dateText(seconds) {
 }
 
 function modeText(mode) {
+  if (mode === 'demo') return '演示数据';
   return mode === 'exact' ? '精确逐卡价' : '快速参考价';
 }
 
@@ -284,6 +286,29 @@ function bindEvents() {
     renderHistory();
   });
   byId('result-search').addEventListener('input', renderResultRows);
+  byId('demo-btn').addEventListener('click', () => {
+    const names = ['Voltaic1', 'Wildlife1', 'Amicia', 'Arthur', 'Béatrice', 'Fishing', 'Grenade Bros', 'Stone Vanguard'];
+    const games = ['Counter-Strike 2', 'Dota 2', 'A Plague Tale: Innocence', 'A Plague Tale: Innocence', 'A Plague Tale: Innocence', 'A Way Out', 'A Way Out', 'Black Myth: Wukong'];
+    const rows = names.map((name, index) => {
+      const count = index === 1 ? 2 : 1;
+      const unit = Math.round((0.4 + index * 0.37) * 100) / 100;
+      return {
+        hash: 'demo-' + index,
+        name,
+        game: games[index],
+        appid: '0',
+        foil: index === 1,
+        count,
+        marketable: true,
+        unit,
+        total: Math.round(unit * count * 100) / 100,
+        status: 'ok'
+      };
+    });
+    const summary = summarize(rows);
+    showResult(summary, rows, 'demo', false);
+    byId('approval-hint').hidden = true;
+  });
   byId('clear-cache-btn').addEventListener('click', async () => {
     await clearPriceCache();
     toast('价格缓存已清空', 'success');
