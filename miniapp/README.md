@@ -4,7 +4,8 @@ SteamCards 的小黑盒小程序（小程序工坊）移植版本。使用标准
 
 ## 当前实现
 
-- 输入 SteamID64、profiles 链接或 `/id/自定义域名` 链接
+- 自动读取小黑盒账号绑定的 SteamID（需要平台启用 Steam 账号能力），提供「一键估值我的库存」
+  - 未绑定/未返回 SteamID 时，回退到手动输入 SteamID64、profiles 链接或 `/id/自定义域名` 链接
 - 读取公开 Steam 库存中的集换式卡牌
 - 两种取价模式：
   - **快速参考价**：按游戏调用 Steam 市场搜索接口批量获取参考价，适合先看整体区间
@@ -81,7 +82,8 @@ GPL-3.0-only，与 SteamCards 主项目一致。
 
 - 远端小程序已创建并绑定：`01a152a8-212d-7e63-aaaa-5cc084f6134d`
 - 线上版本：`0.1.0`（已发布）
-- 新版本 `0.1.1`：已提交审核（修复 /id/ 链接解析错误提示），状态：`auditing`
+- `0.1.1` 已撤回
+- 新版本 `0.1.2`：已提交审核（账号绑定一键估值 + UI 重构），状态：`auditing`
 - `network` 权限申请仍在审核中，状态：`auditing`
 - 线上页面：https://activity.xiaoheihe.cn/u/1xkv3nr/QNsw11SYe_/index.html
 - 分享页：https://web.xiaoheihe.cn/tools/common_share?user_miniprogram_id=01a152a8-212d-7e63-aaaa-5cc084f6134d
@@ -95,3 +97,7 @@ GPL-3.0-only，与 SteamCards 主项目一致。
 ## 为什么 /id/ 链接会提示无法解析
 
 `/id/自定义域名` 链接本身可以识别，但需要向 `steamcommunity.com` 请求个人资料 XML/HTML 才能解析成 SteamID64。当前线上版本尚未获得 `network` 权限，旧版本会把该权限错误误报为“无法解析”。`0.1.1` 已改为保留权限/网络错误并明确提示；在 `network` 获批前，任何真实链接解析都会受平台权限限制。
+
+## 一键估值与账号资料
+
+本版本新增 `userInfo` 权限，使用 `hbSDK.user.getInfo()` 读取当前小黑盒账号资料。只有在平台启用 Steam 账号能力、且账号已绑定 Steam 时才会返回 `userInfo.steam_id`；该字段存在时首页显示「一键估值我的库存」，否则自动展开手动输入。

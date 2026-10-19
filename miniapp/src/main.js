@@ -30,7 +30,9 @@ const state = {
   mode: 'quick',
   steamid: '',
   history: [],
-  historyOnly: false
+  historyOnly: false,
+  userSteamId: '',
+  accountLoaded: false
 };
 
 function showView(name) {
@@ -93,7 +95,82 @@ function setStartBusy(busy) {
   state.busy = busy;
   const btn = byId('start-btn');
   btn.disabled = busy;
-  btn.textContent = busy ? '估值中...' : '开始估值';
+  btn.textContent = busy ? '估值中...' : '用它估值';
+  const oneClick = byId('oneclick-btn');
+  oneClick.disabled = busy;
+  oneClick.textContent = busy ? '估值中...' : '▶ 一键估值我的库存';
+}
+
+function hideAccountLoading() {
+  byId('account-loading').hidden = true;
+}
+
+function showManualAccount(hint) {
+  hideAccountLoading();
+  byId('account-ready').hidden = true;
+  byId('account-hint').hidden = !hint;
+  byId('account-hint').textContent = hint || '';
+  byId('oneclick-btn').hidden = true;
+  byId('show-manual-btn').hidden = true;
+  byId('manual-panel').hidden = false;
+}
+
+function showBoundAccount(userInfo, steamId) {
+  hideAccountLoading();
+  const profile = userInfo && userInfo.profile;
+  const avatar = byId('account-avatar');
+  const avatarUrl = profile && profile.avatar;
+  if (avatarUrl) {
+    avatar.src = avatarUrl;
+    avatar.hidden = false;
+  } else {
+    avatar.hidden = true;
+  }
+  byId('account-name').textContent = (profile && profile.nickname) ? profile.nickname : '小黑盒用户';
+  byId('account-steamid').textContent = 'SteamID ' + steamId;
+  byId('account-ready').hidden = false;
+  byId('account-hint').hidden = true;
+  byId('oneclick-btn').hidden = false;
+  byId('show-manual-btn').hidden = false;
+  byId('manual-panel').hidden = true;
+  state.userSteamId = steamId;
+}
+
+async function loadAccount() {
+  try {
+    const result = await hbSDK.user.getInfo();
+    state.accountLoaded = true;
+    if (!result.isHeyboxAppLoggedIn) {
+      showManualAccount('未登录小黑盒账号。可以手动输入 SteamID 或个人资料链接。');
+      return;
+    }
+    if (!result.userInfo) {
+      showManualAccount('未获取到小黑盒账号资料。可以手动输入 SteamID 或个人资料链接。');
+      return;
+    }
+    const steamId = result.userInfo.steam_id ? String(result.userInfo.steam_id) : '';
+    if (!steamId) {
+      const profile = result.userInfo.profile;
+      const name = profile && profile.nickname ? profile.nickname : '小黑盒账号';
+      showManualAccount(name + ' 未返回绑定的 SteamID。请在小黑盒中绑定 Steam 账号，或手动输入 SteamID/链接。');
+      return;
+    }
+    showBoundAccount(result.userInfo, steamId);
+  } catch (error) {
+    state.accountLoaded = true;
+    const hint = error && error.code === 'PERMISSION_NOT_IN_SNAPSHOT'
+      ? '当前版本未声明 userInfo 权限，无法读取小黑盒账号。请更新小程序版本或手动输入。'
+      : '无法读取小黑盒账号资料：' + ((error && error.message) || '未知错误') + '。可以手动输入 SteamID 或个人资料链接。';
+    showManualAccount(hint);
+  }
+}
+
+function startOneClick() {
+  if (!state.userSteamId || state.busy) return;
+  byId('steamid').value = state.userSteamId;
+  byId('mode').value = 'quick';
+  byId('limit').value = '0';
+  runValuation();
 }
 
 async function renderHistory() {
@@ -286,6 +363,12 @@ function bindEvents() {
     renderHistory();
   });
   byId('result-search').addEventListener('input', renderResultRows);
+  byId('oneclick-btn').addEventListener('click', startOneClick);
+  byId('show-manual-btn').addEventListener('click', () => {
+    byId('manual-panel').hidden = false;
+    byId('show-manual-btn').hidden = true;
+    byId('steamid').focus();
+  });
   byId('demo-btn').addEventListener('click', () => {
     const names = ['Voltaic1', 'Wildlife1', 'Amicia', 'Arthur', 'Béatrice', 'Fishing', 'Grenade Bros', 'Stone Vanguard'];
     const games = ['Counter-Strike 2', 'Dota 2', 'A Plague Tale: Innocence', 'A Plague Tale: Innocence', 'A Plague Tale: Innocence', 'A Way Out', 'A Way Out', 'Black Myth: Wukong'];
@@ -329,7 +412,7 @@ async function boot() {
   } catch (error) {
     void error;
   }
-  await renderHistory();
+  await Promise.all([renderHistory(), loadAccount()]);
 }
 
 boot();

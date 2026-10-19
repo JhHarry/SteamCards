@@ -1,6 +1,6 @@
 {
   "name": "steamcards-miniapp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "description": "SteamCards 小黑盒小程序：Steam 库存卡牌估值",
@@ -18,6 +18,9 @@
       "ios"
     ],
     "permissions": {
+      "userInfo": {
+        "enabled": true
+      },
       "network": {
         "enabled": true,
         "useOfficialDomain": false

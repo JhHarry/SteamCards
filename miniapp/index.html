@@ -21,46 +21,67 @@
 
       <main>
         <section id="view-home" class="view">
-          <section class="panel hero-panel">
-            <div class="eyebrow">STEAM CARD VALUER</div>
-            <h2>估算库存卡牌的市场价值</h2>
-            <p class="muted">支持 SteamID64、profiles 链接或 /id/ 自定义主页链接。库存与价格仅在本机计算，不上传账号数据。</p>
-            <div class="chip-row">
-              <span class="chip">本地缓存</span>
-              <span class="chip">快速参考价</span>
-              <span class="chip">加速器可用</span>
+          <section class="panel account-panel">
+            <div id="account-loading" class="account-loading">正在识别小黑盒账号...</div>
+            <div id="account-ready" class="account-ready" hidden>
+              <img id="account-avatar" class="account-avatar" alt="" />
+              <div class="account-copy">
+                <strong id="account-name">小黑盒用户</strong>
+                <span id="account-steamid" class="account-steamid"></span>
+              </div>
+              <span class="badge badge-ok">Steam 已绑定</span>
+            </div>
+            <div id="account-hint" class="hint" hidden></div>
+            <button id="oneclick-btn" class="btn btn-primary" type="button" hidden>
+              <span class="btn-play">▶</span> 一键估值我的库存
+            </button>
+            <button id="show-manual-btn" class="link-btn manual-switch" type="button" hidden>使用其他 Steam 账号</button>
+            <div class="account-actions">
+              <button id="demo-btn" class="link-btn" type="button">查看演示数据</button>
+              <button id="clear-cache-btn" class="link-btn" type="button">清空缓存</button>
             </div>
           </section>
 
-          <section class="panel">
+          <section class="panel hero-panel">
+            <div class="eyebrow">STEAM CARD VALUER</div>
+            <h2>一键估算库存卡牌价值</h2>
+            <p class="muted">优先使用小黑盒账号绑定的 Steam 库存；数据仅在本机计算，不上传账号信息。</p>
+            <div class="chip-row">
+              <span class="chip">一键估值</span>
+              <span class="chip">本地缓存</span>
+              <span class="chip">手机端直连</span>
+            </div>
+          </section>
+
+          <section id="manual-panel" class="panel" hidden>
             <label class="field-label" for="steamid">SteamID64 / 个人资料链接</label>
             <input id="steamid" class="input" autocomplete="off" placeholder="7656119XXXXXXXXXX 或 https://steamcommunity.com/id/name/" />
             <p class="hint">需要 Steam 隐私设置中「游戏详情」为公开，才能读取库存。</p>
 
-            <div class="field-row">
-              <div class="field">
-                <label class="field-label" for="mode">取价方式</label>
-                <select id="mode" class="input">
-                  <option value="quick">快速参考价（批量，推荐）</option>
-                  <option value="exact">精确逐卡价（较慢）</option>
-                </select>
+            <details class="advanced">
+              <summary>高级设置</summary>
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="mode">取价方式</label>
+                  <select id="mode" class="input">
+                    <option value="quick">快速参考价（批量，推荐）</option>
+                    <option value="exact">精确逐卡价（较慢）</option>
+                  </select>
+                </div>
+                <div class="field field-narrow">
+                  <label class="field-label" for="limit">只查前 N 种</label>
+                  <input id="limit" class="input" type="number" min="0" step="1" value="0" inputmode="numeric" />
+                </div>
               </div>
-              <div class="field field-narrow">
-                <label class="field-label" for="limit">只查前 N 种</label>
-                <input id="limit" class="input" type="number" min="0" step="1" value="0" inputmode="numeric" />
-              </div>
-            </div>
+            </details>
 
-            <button id="start-btn" class="btn btn-primary" type="button">
-              <span class="btn-play">▶</span> 开始估值
-            </button>
-            <button id="demo-btn" class="btn btn-quiet" type="button">查看演示数据</button>
-            <button id="clear-cache-btn" class="btn btn-quiet" type="button">清空本地价格缓存</button>
-            <p id="error-text" class="error-text" role="status" aria-live="polite"></p>
-            <p id="approval-hint" class="hint safe-hint" hidden>
-              当前环境未获得 network 权限。正式使用需要在小黑盒开放平台申请 network 权限，并申报 steamcommunity.com 域名。
-            </p>
+            <button id="start-btn" class="btn btn-quiet" type="button">用它估值</button>
           </section>
+
+          <p id="error-text" class="error-text global-error" role="status" aria-live="polite"></p>
+          <p id="approval-hint" class="hint safe-hint" hidden>
+            当前环境未获得 network 权限。正式使用需要在小黑盒开放平台申请 network 权限，并申报 steamcommunity.com 域名。
+          </p>
 
           <section id="history-section" class="panel" hidden>
             <div class="panel-head">
@@ -72,8 +93,9 @@
 
           <section class="panel notice">
             <h3>使用说明</h3>
-            <p>快速参考价通过 Steam 市场搜索接口按游戏批量获取，适合先看整体区间；精确模式逐张查询 market 最低价，速度较慢且更容易触发 Steam 限流。</p>
-            <p>若使用手机加速器，请确认其采用全局代理或覆盖小黑盒客户端流量；只加速 Steam 客户端的分应用模式可能不会作用于小程序网络。</p>
+            <p>一键估值会读取你小黑盒账号绑定的 Steam 账号库存。若未绑定，可展开「使用其他 Steam 账号」手动输入 SteamID 或个人资料链接。</p>
+            <p>快速参考价通过 Steam 市场搜索接口按游戏批量获取，适合先看整体区间；精确模式逐张查询，速度较慢。</p>
+            <p>手机加速器需要覆盖小黑盒客户端流量，只加速 Steam 客户端的分应用模式可能无效。</p>
           </section>
         </section>
 
