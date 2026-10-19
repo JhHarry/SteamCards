@@ -99,6 +99,16 @@ async function fetchText(url, options = {}) {
   return result.data;
 }
 
+function isFatalResolveError(error) {
+  const code = error && error.code;
+  return code === 'PERMISSION_DENIED'
+    || code === 'PERMISSION_NOT_IN_SNAPSHOT'
+    || code === 'METHOD_FORBIDDEN'
+    || code === 'REQUEST_FAILED'
+    || code === 'NETWORK_ERROR'
+    || (error && error.status === 429);
+}
+
 export async function resolveSteamId(input) {
   const value = (input || '').trim();
   if (!value) throw new EngineError('请输入 SteamID64 或个人资料链接', 'INVALID_INPUT');
@@ -120,7 +130,7 @@ export async function resolveSteamId(input) {
   try {
     xml = await fetchText('https://steamcommunity.com/id/' + encoded + '/?xml=1', { headers: JSON_HEADERS });
   } catch (error) {
-    if (error.status === 429) throw error;
+    if (isFatalResolveError(error)) throw error;
   }
   const fromXml = typeof xml === 'string' ? xml.match(/<steamID64>\s*(\d{17})\s*<\/steamID64>/i) : null;
   if (fromXml) return fromXml[1];
@@ -132,7 +142,7 @@ export async function resolveSteamId(input) {
       : null;
     if (fromHtml) return fromHtml[1];
   } catch (error) {
-    if (error.status === 429) throw error;
+    if (isFatalResolveError(error)) throw error;
   }
   throw new EngineError('无法解析该自定义链接。请确认主页存在，或直接使用 17 位 SteamID64。', 'RESOLVE_FAILED');
 }
