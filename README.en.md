@@ -24,6 +24,10 @@ SteamCards is a desktop application for valuing the trading cards in a Steam inv
 
 ![SteamCards valuation results](docs/screenshot-results.png)
 
+## Xiaoheihe Mini Program (Experimental)
+
+The [`miniapp/`](miniapp/README.md) directory contains an experimental Xiaoheihe mini-program port built with standard web technologies and `@heybox/hb-sdk`. It calls Steam's public inventory and market APIs directly from the client and requires platform approval for the `network` permission and the `steamcommunity.com` domain. See [miniapp/README.md](miniapp/README.md) for details.
+
 ## Architecture
 
 | Module | Stack | Responsibility |

@@ -24,6 +24,12 @@ SteamCards 是一款面向 Windows 平台的 Steam 库存卡牌估值桌面应�
 
 ![SteamCards 估值结果](docs/screenshot-results.png)
 
+## 小黑盒小程序（实验性）
+
+仓库内的 [`miniapp/`](miniapp/README.md) 是 SteamCards 的小黑盒小程序工坊移植版本，使用标准 Web 技术开发，运行在小黑盒客户端沙箱中，不依赖桌面程序。
+
+该版本直接通过 `@heybox/hb-sdk` 的 `network.request` 访问 Steam 公开库存与市场接口，属于**纯客户端直连**，需要在小黑盒开放平台单独申请 `network` 权限并申报 `steamcommunity.com` 域名，详见 [miniapp/README.md](miniapp/README.md)。
+
 ## 技术架构
 
 | 模块 | 技术栈 | 职责 |
@@ -36,6 +42,7 @@ SteamCards 是一款面向 Windows 平台的 Steam 库存卡牌估值桌面应�
 
 ```text
 web/                 React 前端源码
+miniapp/             小黑盒小程序（实验性，纯客户端直连）
 server/              Rust 核心库与服务端
 desktop/src-tauri/   Tauri 桌面应用外壳
 ```

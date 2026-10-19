@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#171513" />
+    <title>Steam 卡牌估值</title>
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"><span></span><i></i></div>
+          <div class="brand-copy">
+            <h1>Steam 卡牌估值</h1>
+            <p>库存集换式卡牌 · 本地计算与缓存</p>
+          </div>
+        </div>
+        <span class="badge badge-live"><span class="dot"></span>本地运行</span>
+      </header>
+
+      <main>
+        <section id="view-home" class="view">
+          <section class="panel hero-panel">
+            <div class="eyebrow">STEAM CARD VALUER</div>
+            <h2>估算库存卡牌的市场价值</h2>
+            <p class="muted">支持 SteamID64、profiles 链接或 /id/ 自定义主页链接。库存与价格仅在本机计算，不上传账号数据。</p>
+            <div class="chip-row">
+              <span class="chip">本地缓存</span>
+              <span class="chip">快速参考价</span>
+              <span class="chip">加速器可用</span>
+            </div>
+          </section>
+
+          <section class="panel">
+            <label class="field-label" for="steamid">SteamID64 / 个人资料链接</label>
+            <input id="steamid" class="input" autocomplete="off" placeholder="7656119XXXXXXXXXX 或 https://steamcommunity.com/id/name/" />
+            <p class="hint">需要 Steam 隐私设置中「游戏详情」为公开，才能读取库存。</p>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="mode">取价方式</label>
+                <select id="mode" class="input">
+                  <option value="quick">快速参考价（批量，推荐）</option>
+                  <option value="exact">精确逐卡价（较慢）</option>
+                </select>
+              </div>
+              <div class="field field-narrow">
+                <label class="field-label" for="limit">只查前 N 种</label>
+                <input id="limit" class="input" type="number" min="0" step="1" value="0" inputmode="numeric" />
+              </div>
+            </div>
+
+            <button id="start-btn" class="btn btn-primary" type="button">
+              <span class="btn-play">▶</span> 开始估值
+            </button>
+            <button id="clear-cache-btn" class="btn btn-quiet" type="button">清空本地价格缓存</button>
+            <p id="error-text" class="error-text" role="status" aria-live="polite"></p>
+            <p id="approval-hint" class="hint safe-hint" hidden>
+              当前环境未获得 network 权限。正式使用需要在小黑盒开放平台申请 network 权限，并申报 steamcommunity.com 域名。
+            </p>
+          </section>
+
+          <section id="history-section" class="panel" hidden>
+            <div class="panel-head">
+              <h3>历史结果</h3>
+              <button id="clear-history-btn" class="link-btn" type="button">清空</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+          </section>
+
+          <section class="panel notice">
+            <h3>使用说明</h3>
+            <p>快速参考价通过 Steam 市场搜索接口按游戏批量获取，适合先看整体区间；精确模式逐张查询 market 最低价，速度较慢且更容易触发 Steam 限流。</p>
+            <p>若使用手机加速器，请确认其采用全局代理或覆盖小黑盒客户端流量；只加速 Steam 客户端的分应用模式可能不会作用于小程序网络。</p>
+          </section>
+        </section>
+
+        <section id="view-progress" class="view" hidden>
+          <section class="panel progress-panel">
+            <div class="eyebrow">VALUING</div>
+            <h2>正在读取库存与价格</h2>
+            <p id="progress-text" class="muted">准备中...</p>
+            <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+            <div class="progress-meta">
+              <span id="progress-count">0 / 0</span>
+              <span id="progress-percent">0%</span>
+            </div>
+            <p id="progress-detail" class="hint"></p>
+            <button id="cancel-btn" class="btn btn-quiet" type="button">取消</button>
+          </section>
+        </section>
+
+        <section id="view-results" class="view" hidden>
+          <section class="results-head">
+            <button id="back-home-btn" class="link-btn" type="button">‹ 返回</button>
+            <span id="result-mode" class="badge">快速参考价</span>
+          </section>
+          <section class="summary-grid">
+            <div class="summary-card accent">
+              <span>毛额估值</span>
+              <strong id="sum-gross">—</strong>
+              <small id="sum-gross-sub"></small>
+            </div>
+            <div class="summary-card">
+              <span>扣除手续费</span>
+              <strong id="sum-net">—</strong>
+              <small>按 15% 估算</small>
+            </div>
+          </section>
+          <section class="summary-grid summary-grid-small">
+            <div class="summary-card"><span>卡牌种数</span><strong id="sum-types">—</strong></div>
+            <div class="summary-card"><span>卡牌张数</span><strong id="sum-copies">—</strong></div>
+            <div class="summary-card"><span>已定价</span><strong id="sum-priced">—</strong></div>
+            <div class="summary-card"><span>未定价</span><strong id="sum-unpriced">—</strong></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h3>卡牌明细</h3>
+              <span id="result-count" class="muted"></span>
+            </div>
+            <input id="result-search" class="input search" type="search" placeholder="搜索卡牌 / 游戏" />
+            <div id="result-list" class="card-list"></div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <span>数据仅保存在本机 · GPLv3</span>
+        <span>非 Steam 官方产品</span>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
